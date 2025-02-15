@@ -10,17 +10,17 @@ const BASE_MASS_LOSS: f32 = 0.012;
 pub struct Core {
     u_mass: f32,
     temperature: f32,
-    control_rod_postion: u8, 
+    control_rod_postion: u8,
 }
 
 impl Core {
     pub fn scram(&mut self) -> Result<String, String> {
         if self.temperature >= U_MELT_PT {
             return Err(String::from("MELTDOWN!")); // Not much we can do now!
-        } else {
-            self.control_rod_postion = 100; // Drop the rods
-            return Ok(String::from("SCRAMMED REACTOR!"));
-        }
+        } 
+
+        self.control_rod_postion = 100; // Drop the rods
+        Ok(String::from("SCRAMMED REACTOR!"))
     }
 
     pub fn decay(&mut self) -> Result<bool, String> {
@@ -28,7 +28,7 @@ impl Core {
             return Err(String::from("OUT OF FUEL!"));
         }
 
-        // first up use random to work out if something decayed, 
+        // use random to work out if something decayed, 
         // more likely if control rods are more withdrawn (closer to 0).
         if !random_bool(self.control_rod_postion as f64 / 99.9) {
             self.u_mass -= BASE_MASS_LOSS;
@@ -45,7 +45,6 @@ impl Core {
             }
             return Ok(false);
         }
-
         Ok(true)
     }
 
@@ -71,7 +70,7 @@ impl Core {
         }
     }
 
-    pub fn insert_rods(&mut self, amount: u8) -> Result<u8, String>{
+    pub fn insert_rods(&mut self, amount: u8) -> Result<u8, String> {
         if self.control_rod_postion + amount >= 100 {
             return Err(String::from("Cannot insert rods that much"));
         } else {
@@ -96,8 +95,8 @@ mod test {
     use super::*;
 
     #[test]
-    fn can_build_core() {
+    fn starts_at_ambient_temp() {
         let c = build_core(50000.5);
-        assert_eq!(c.get_temperature(), 293.15);
+        assert_eq!(c.get_temperature(), ROOM_TEMPERATURE);
     }
 }
