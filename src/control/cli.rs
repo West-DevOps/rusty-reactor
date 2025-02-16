@@ -12,6 +12,7 @@ enum Commands {
 pub fn run_cli() {
     let sin: Stdin = stdin();
     let mut sout: Stdout = stdout();
+    let mut serr: Stderr = stderr();
 
     loop {
         let _ = sout.lock();

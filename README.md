@@ -34,3 +34,4 @@ In future:
 * efficiency of heat exchange with larger/smaller heat exhangers between primary and secondary loops working with surface areas and heat capacities
 * Modelling pressure and state changes in the secondary coolant loop (liquid water into steam and condensation etc.)
 * Use the [thread](https://doc.rust-lang.org/std/thread/index.html) library to make this all work in a more realistic fashion! 
+* Once threaded might look into modelling real-world constraints e.g. commanding a SCRAM of the core doesn't happen instantly. 

@@ -1,5 +1,5 @@
 mod core;
-mod coolant;
+pub mod coolant;
 
 use core::Core;
 use coolant::{ Loop, Exchanger };
@@ -19,5 +19,9 @@ impl Reactor {
             secondary_loop: Loop::new(),
             heat_exchanger: Exchanger::new(exhanger_efficency),
         }
+    }
+
+    pub fn get_secondary_loop(self) -> Loop {
+        self.secondary_loop
     }
 }

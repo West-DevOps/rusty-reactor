@@ -3,6 +3,15 @@ pub mod cli;
 
 use scada::Scada;
 
-struct ControlRoom {
+pub struct ControlRoom {
     scada: Scada,
+}
+
+impl ControlRoom {
+    pub fn new() -> ControlRoom {
+        ControlRoom {
+            scada: Scada::new(),
+        }
+    }
+
 }

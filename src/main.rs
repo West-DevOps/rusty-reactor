@@ -1,13 +1,14 @@
 mod control;
 mod reactor;
 mod turbine;
+mod station;
 
-
-use control::cli::run_cli;
+use station::Station;
 
 fn main() {
-    run_cli();
+    let station: Station = station::Station::new(500000.0, 87);
 }
+
 
 // fn main() {
 //     println!("Heat exchanger efficency = {}", reactor::scada::HEAT_EXCHANGER_EFFICENCY);
