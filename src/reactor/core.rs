@@ -1,6 +1,6 @@
 use rand::random_bool;
 
-pub const ROOM_TEMPERATURE: f32 = 293.15;
+pub const ROOM_TEMPERATURE: f32 = 293.15; // Kelvin (20C)
 pub const U_MELT_PT: f32 = 1405.3;
 // pub const U_BOIL_PT: f32 = 4404.0;
 
@@ -14,6 +14,14 @@ pub struct Core {
 }
 
 impl Core {
+    pub fn new(fuel_load: f32) -> Core { 
+        Core {
+            u_mass: fuel_load, // Grams of Uranium in core
+            temperature: ROOM_TEMPERATURE, // Kelvin
+            control_rod_postion: 100, // 100% (fully in the core, totally choking the reaction)
+        }
+    }
+
     pub fn scram(&mut self) -> Result<String, String> {
         if self.temperature >= U_MELT_PT {
             return Err(String::from("MELTDOWN!")); // Not much we can do now!
@@ -81,14 +89,6 @@ impl Core {
 
 }
 
-pub fn build_core(fuel_load: f32) -> Core {
-    Core {
-        u_mass: fuel_load, // Grams of Uranium in core
-        temperature: ROOM_TEMPERATURE, // Kelvin
-        control_rod_postion: 100, // 100% (fully in the core, totally choking the reaction)
-    }
-}
-
 
 #[cfg(test)]
 mod test {
@@ -96,7 +96,7 @@ mod test {
 
     #[test]
     fn starts_at_ambient_temp() {
-        let c = build_core(50000.5);
+        let c = Core::new(50000.5);
         assert_eq!(c.get_temperature(), ROOM_TEMPERATURE);
     }
 }
