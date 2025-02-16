@@ -11,10 +11,10 @@ pub struct TurbineHall {
 }
 
 impl TurbineHall {
-    pub fn new() -> TurbineHall {
+    pub fn new(generator_ratio: u8) -> TurbineHall {
         TurbineHall {
             steam_turbine: SteamTurbine::new(),
-            generator: ElectricalGenerator::new(),
+            generator: ElectricalGenerator::new(generator_ratio),
         }
     }
 }

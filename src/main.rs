@@ -6,7 +6,8 @@ mod station;
 use station::Station;
 
 fn main() {
-    let station: Station = station::Station::new(500000.0, 87);
+
+    let station: Station = station::Station::new(500000.0, 87, 1);
 }
 
 
