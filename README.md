@@ -35,3 +35,7 @@ In future:
 * Modelling pressure and state changes in the secondary coolant loop (liquid water into steam and condensation etc.)
 * Use the [thread](https://doc.rust-lang.org/std/thread/index.html) library to make this all work in a more realistic fashion! 
 * Once threaded might look into modelling real-world constraints e.g. commanding a SCRAM of the core doesn't happen instantly. 
+
+## Overall flow 
+
+* The `core` 

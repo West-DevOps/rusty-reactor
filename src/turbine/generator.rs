@@ -27,9 +27,9 @@ mod test {
 
     #[test]
     fn test_gear_reduction() {
-        let mut gen: ElectricalGenerator = ElectricalGenerator::new(2);
-        gen.input_shaft_rpm = 1000.0;
+        let mut generator: ElectricalGenerator = ElectricalGenerator::new(2);
+        generator.input_shaft_rpm = 1000.0;
 
-        assert_eq!(gen.get_output_power(), 2000.0);
+        assert_eq!(generator.get_output_power(), 2000.0);
     }
 }

@@ -12,16 +12,22 @@ pub struct Reactor {
 }
 
 impl Reactor {
-    pub fn new(fuel_load: f32, exhanger_efficency: u8) -> Reactor {
+    pub fn new(fuel_load: f32, exchanger_efficiency: u8) -> Reactor {
         Reactor {
             core: Core::new(fuel_load),
             primary_loop: Loop::new(),
             secondary_loop: Loop::new(),
-            heat_exchanger: Exchanger::new(exhanger_efficency),
+            heat_exchanger: Exchanger::new(exchanger_efficiency),
         }
     }
 
     pub fn get_secondary_loop(self) -> Loop {
         self.secondary_loop
+    }
+
+    pub fn start(self) {
+        loop {
+            
+        }
     }
 }

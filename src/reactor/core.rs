@@ -1,8 +1,5 @@
 use rand::random_bool;
-
-pub const ROOM_TEMPERATURE: f32 = 293.15; // Kelvin (20C)
-pub const U_MELT_PT: f32 = 1405.3;
-// pub const U_BOIL_PT: f32 = 4404.0;
+use crate::constants;
 
 const BASE_HEAT: f32 = 0.143;
 const BASE_MASS_LOSS: f32 = 0.012;
@@ -18,13 +15,13 @@ impl Core {
     pub fn new(fuel_load: f32) -> Core { 
         Core {
             u_mass: fuel_load, // Grams of Uranium in core (determines how long the core will last)
-            temperature: ROOM_TEMPERATURE, // Kelvin, this gets > U_MELT_PT = GAME OVER!
+            temperature: constants::ROOM_TEMPERATURE_K, // Kelvin, this gets > U_MELT_PT = GAME OVER!
             control_rod_postion: 100, // 100% (fully inserted into the core, totally choking the reaction)
         }
     }
 
     pub fn scram(&mut self) -> Result<&str, &str> {
-        if self.temperature >= U_MELT_PT {
+        if self.temperature >= constants::U_MELT_PT_K {
             return Err("MELTDOWN!"); // Not much we can do now!
         } 
 
@@ -49,7 +46,7 @@ impl Core {
 
         } else {
             // Nothing decayed, lose some heat
-            if self.temperature > ROOM_TEMPERATURE {
+            if self.temperature > constants::ROOM_TEMPERATURE_K {
                 self.temperature -= BASE_HEAT;
             }
             return Ok(false);
@@ -98,6 +95,6 @@ mod test {
     #[test]
     fn starts_at_ambient_temp() {
         let c = Core::new(50000.5);
-        assert_eq!(c.get_temperature(), ROOM_TEMPERATURE);
+        assert_eq!(c.get_temperature(), constants::ROOM_TEMPERATURE_K);
     }
 }

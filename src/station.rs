@@ -1,8 +1,6 @@
-use crate::reactor;
-
-use super::reactor::Reactor;
-use super::turbine::TurbineHall;
-use super::control::ControlRoom;
+use crate::reactor::Reactor;
+use crate::turbine::TurbineHall;
+use crate::control::ControlRoom;
 
 pub struct Station {
     reactor: Reactor,
@@ -11,9 +9,9 @@ pub struct Station {
 }
 
 impl Station {
-    pub fn new(fuel_load: f32, exchanger_efficency: u8, ratio: u8) -> Station {
+    pub fn new(fuel_load: f32, exchanger_efficiency: u8, ratio: u8) -> Station {
         Station {
-            reactor: Reactor::new(fuel_load, exchanger_efficency),
+            reactor: Reactor::new(fuel_load, exchanger_efficiency),
             turbine_hall: TurbineHall::new(ratio),
             control_room: ControlRoom::new(),
         }
@@ -27,8 +25,6 @@ impl Station {
 
 #[cfg(test)]
 mod test {
-    use std::any::Any;
-
     use super::*;
 
     #[test]

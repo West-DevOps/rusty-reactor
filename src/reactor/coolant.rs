@@ -1,5 +1,6 @@
-use super::core;
+use crate::constants;
 
+#[derive(Debug)]
 pub struct Loop {
     inlet_temperature: f32,
     outlet_temperature: f32,
@@ -8,8 +9,8 @@ pub struct Loop {
 impl Loop {
     pub fn new() -> Loop {
         Loop {
-            inlet_temperature: core::ROOM_TEMPERATURE,
-            outlet_temperature: core::ROOM_TEMPERATURE,
+            inlet_temperature: constants::ROOM_TEMPERATURE_K,
+            outlet_temperature: constants::ROOM_TEMPERATURE_K,
         }
     }
 
@@ -18,6 +19,7 @@ impl Loop {
     }
 }
 
+#[derive(Debug)]
 pub struct Exchanger {
     efficiency: u8,
 }
