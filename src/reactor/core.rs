@@ -97,4 +97,10 @@ mod test {
         let c = Core::new(50000.5);
         assert_eq!(c.get_temperature(), constants::ROOM_TEMPERATURE_K);
     }
+
+    #[test]
+    fn reactor_rods_are_fully_inserted_on_start() {
+        let c: Core = Core::new(50000.5);
+        assert_eq!(c.control_rod_postion, 100);
+    }
 }

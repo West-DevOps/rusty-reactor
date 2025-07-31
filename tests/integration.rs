@@ -1,6 +1,7 @@
-use rusty_reactor::station;
+use rusty_reactor::station::Station;
 
 #[test]
 fn create_full_reactor_stack() {
-    let _station = station::Station::new(50000.0, 80, 2);
+    let station: Station = Station::new(50000.0, 80, 2);
+    station.run();
 }

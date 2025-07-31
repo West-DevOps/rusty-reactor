@@ -1,5 +1,14 @@
-use rusty_reactor::station;
+mod logger;
+mod station;
+mod turbine;
+mod constants;
+mod control;
+mod reactor;
+
+use logger::init_the_loggers;
+use log::{log, Level};
 
 fn main() {
-    let _stn = station::Station::new(50000.0, 80, 2);
+    init_the_loggers();
+    
 }

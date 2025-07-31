@@ -1,14 +1,18 @@
+use log::{info, warn};
+
 use crate::reactor::Reactor;
 use crate::turbine::TurbineHall;
 use crate::control::ControlRoom;
 
+/// Struct to encapsulate all of the individual components of thew reactor. 
 pub struct Station {
-    reactor: Reactor,
-    turbine_hall: TurbineHall,
-    control_room: ControlRoom,
+    pub reactor: Reactor,
+    pub turbine_hall: TurbineHall,
+    pub control_room: ControlRoom,
 }
 
 impl Station {
+    /// Creates a new instance of the Station
     pub fn new(fuel_load: f32, exchanger_efficiency: u8, ratio: u8) -> Station {
         Station {
             reactor: Reactor::new(fuel_load, exchanger_efficiency),
@@ -17,8 +21,8 @@ impl Station {
         }
     }
 
-    pub fn run(&mut self) {
-        println!("entered run of station");
+    pub fn run(&self) {
+        info!("entered run of station");
     }
 }
 
