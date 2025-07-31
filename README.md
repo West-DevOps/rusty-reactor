@@ -2,6 +2,8 @@
 
 Playaround & learning rust by modelling (not scientifically at all) a nuclear power plant. 
 
+Based around the `rand` crate to determine nuclear decay primarily 
+
 ## What does each module do?
 
 The modules (files) are laid out as you would expect a physical reactor station.  
@@ -33,9 +35,11 @@ In future:
 * Use the various stages to do **harder** maths such as computing the _actual_ heat transfer of the coolant loops
 * efficiency of heat exchange with larger/smaller heat exhangers between primary and secondary loops working with surface areas and heat capacities
 * Modelling pressure and state changes in the secondary coolant loop (liquid water into steam and condensation etc.)
-* Use the [thread](https://doc.rust-lang.org/std/thread/index.html) library to make this all work in a more realistic fashion! 
 * Once threaded might look into modelling real-world constraints e.g. commanding a SCRAM of the core doesn't happen instantly. 
 
 ## Overall flow 
 
-* The `core` 
+* The `main` module crates the `station` struct which has everything in it you would expect
+* The `main` module starts the `station` thread (the main reactor decay thread)
+* The `main` thread starts the user `CLI` thread and sets up the channels between them
+* The `main` thread enters a wait state for either thread to bomb out and will panic the program
