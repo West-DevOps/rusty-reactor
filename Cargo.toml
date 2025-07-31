@@ -7,7 +7,7 @@ description = "A learning playground for rust based on a nuclear powerplant"
 readme = "README.md"
 license = "MIT"
 repository = "https://github.com/West-DevOps/rusty-reactor"
-categories = ["learning"]
+categories = ["science"]
 
 
 [dependencies]
