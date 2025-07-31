@@ -1,4 +1,4 @@
-use log::{info, warn};
+use log::info;
 
 use crate::reactor::Reactor;
 use crate::turbine::TurbineHall;
@@ -33,7 +33,7 @@ mod test {
 
     #[test]
     fn station_create() {
-        let mut st: Station = Station::new(50000000.0, 76, 2);
+        let st: Station = Station::new(50000000.0, 76, 2);
         st.run();
     }
 }

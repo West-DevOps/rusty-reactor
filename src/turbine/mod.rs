@@ -3,7 +3,6 @@ mod generator;
 
 use turbine::SteamTurbine;
 use generator::ElectricalGenerator;
-use super::reactor::coolant::Loop;
 
 pub struct TurbineHall {
     steam_turbine: SteamTurbine,
