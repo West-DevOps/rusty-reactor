@@ -1,5 +1,7 @@
 # rusty-reactor
 
+> This project is still in active development and as such is currently **not functional** and will not be 'generally available' for others to play about with until version `1.0.0`.  Please check the [Roadmap](https://github.com/orgs/West-DevOps/projects/4/views/2) for details about upcoming features and fixes but as this is a personal learning project *there is no release date* for `1.0.0`.
+
 Playaround & learning rust by modelling (not scientifically at all) a nuclear power plant. 
 
 Based around the `rand` crate to determine nuclear decay primarily 
@@ -37,9 +39,18 @@ In future:
 * Modelling pressure and state changes in the secondary coolant loop (liquid water into steam and condensation etc.)
 * Once threaded might look into modelling real-world constraints e.g. commanding a SCRAM of the core doesn't happen instantly. 
 
-## Overall flow 
+## Program flow
 
-* The `main` module crates the `station` struct which has everything in it you would expect
-* The `main` module starts the `station` thread (the main reactor decay thread)
-* The `main` thread starts the user `CLI` thread and sets up the channels between them
-* The `main` thread enters a wait state for either thread to bomb out and will panic the program
+* `main` thread performs CLI argument parsing using `clap`
+* `main` thread inits the logging system.
+* `main` thread creates the `Station` struct which has everything in it you would expect:
+  * The `Core` struct
+  * Coolant Loops
+  * Control Room (SCADA & Operator command execution)
+  * Generator and Turbine
+  * etc.
+* `main` thread starts the `station` thread
+* `main` thread starts the user `cli` thread and sets up the channels between them
+* `main` thread enters a wait state for either thread to bomb out and will panic the program
+* `station` thread calls the `decay()` function on the `Core` and then checks for a user command from the `cli` thread in a `loop {}`. 
+* `cli` thread attaches to the stdio handles and presents the CLI to the user / handles user interactions with the reactor program and dispatches those commands to the `station` thread using channels when the user executes a command.
