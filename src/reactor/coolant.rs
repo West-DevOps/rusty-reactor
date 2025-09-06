@@ -2,15 +2,15 @@ use crate::constants;
 
 #[derive(Debug)]
 pub struct Loop {
-    inlet_temperature: f32,
-    outlet_temperature: f32,
+    inlet_temperature: f64,
+    outlet_temperature: f64,
 }
 
 impl Loop {
     pub fn new() -> Loop {
         Loop {
-            inlet_temperature: constants::ROOM_TEMPERATURE_K,
-            outlet_temperature: constants::ROOM_TEMPERATURE_K,
+            inlet_temperature: constants::ROOM_TEMPERATURE,
+            outlet_temperature: constants::ROOM_TEMPERATURE,
         }
     }
 

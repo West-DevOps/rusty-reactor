@@ -4,6 +4,7 @@ pub mod coolant;
 use core::Core;
 use coolant::{ Loop, Exchanger };
 
+/// For grouping together the resources of the reactor, uses `start()` function to start the main `Core` `loop {}`.
 pub struct Reactor {
     core: Core,
     primary_loop: Loop,
@@ -12,7 +13,8 @@ pub struct Reactor {
 }
 
 impl Reactor {
-    pub fn new(fuel_load: f32, exchanger_efficiency: u8) -> Reactor {
+    /// Create a new instance of the Reactor object / thread.
+    pub fn new(fuel_load: f64, exchanger_efficiency: u8) -> Reactor {
         Reactor {
             core: Core::new(fuel_load),
             primary_loop: Loop::new(),
