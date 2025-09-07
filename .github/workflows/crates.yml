@@ -1,7 +1,6 @@
 on:
   release:
-    types: 
-      - released
+    types: [published]
 
 name: Crates.io publish
 
