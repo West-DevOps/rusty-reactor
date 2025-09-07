@@ -1,27 +1,27 @@
 use rand::random_bool;
-use crate::constants;
+use crate::{units, constants};
 
-const BASE_HEAT: f32 = 0.143;
-const BASE_MASS_LOSS: f32 = 0.012;
+const BASE_HEAT: f64 = 0.143;
+const BASE_MASS_LOSS: f64 = 0.012;
 
 #[derive(Debug)]
 pub struct Core {
-    u_mass: f32,
-    temperature: f32,
-    control_rod_postion: u8,
+    u_mass: units::Gram,
+    temperature: units::Kelvin,
+    control_rod_postion: units::RodPosition,
 }
 
 impl Core {
-    pub fn new(fuel_load: f32) -> Core { 
+    pub fn new(fuel_load: units::Gram) -> Core { 
         Core {
             u_mass: fuel_load, // Grams of Uranium in core (determines how long the core will last)
-            temperature: constants::ROOM_TEMPERATURE_K, // Kelvin, this gets > U_MELT_PT = GAME OVER!
+            temperature: constants::ROOM_TEMPERATURE, // Kelvin, this gets > U_MELT_PT = GAME OVER!
             control_rod_postion: 100, // 100% (fully inserted into the core, totally choking the reaction)
         }
     }
 
     pub fn scram(&mut self) -> Result<&str, &str> {
-        if self.temperature >= constants::U_MELT_PT_K {
+        if self.temperature >= constants::U_PROPERTIES.melting_point {
             return Err("MELTDOWN!"); // Not much we can do now!
         } 
 
@@ -46,7 +46,7 @@ impl Core {
 
         } else {
             // Nothing decayed, lose some heat
-            if self.temperature > constants::ROOM_TEMPERATURE_K {
+            if self.temperature > constants::ROOM_TEMPERATURE {
                 self.temperature -= BASE_HEAT;
             }
             return Ok(false);
@@ -54,37 +54,25 @@ impl Core {
         Ok(true)
     }
 
-    pub fn get_u_mass(&self) -> f32 {
+    pub fn get_u_mass(&self) -> units::Gram {
         self.u_mass
     }
 
-    pub fn get_temperature(&self) -> f32 {
+    pub fn get_temperature(&self) -> units::Kelvin {
         self.temperature
     }
 
-    pub fn get_rod_position(&self) -> u8 {
+    pub fn get_rod_position(&self) -> units::RodPosition {
         self.control_rod_postion
     }
 
-    pub fn withdraw_rods(&mut self, amount: u8) -> Result<u8, String> {
-        let new_position = self.control_rod_postion - amount;
-        if new_position <= 0 {
-            return Err(String::from("Cannot pull rods by that amount"));
-        } else {
-            self.control_rod_postion -= amount;
-            return Ok(self.control_rod_postion);
+    pub fn set_rod_position(&mut self, value: units::RodPosition) -> Result<units::RodPosition, &str> {
+        if value > 100 {
+            return Err("Rod position must be 0-100");
         }
+        self.control_rod_postion = value;
+        Ok(self.control_rod_postion)
     }
-
-    pub fn insert_rods(&mut self, amount: u8) -> Result<u8, String> {
-        if self.control_rod_postion + amount >= 100 {
-            return Err(String::from("Cannot insert rods that much"));
-        } else {
-            self.control_rod_postion += amount;
-            return Ok(self.control_rod_postion);
-        }
-    }
-
 }
 
 
@@ -95,7 +83,7 @@ mod test {
     #[test]
     fn starts_at_ambient_temp() {
         let c = Core::new(50000.5);
-        assert_eq!(c.get_temperature(), constants::ROOM_TEMPERATURE_K);
+        assert_eq!(c.get_temperature(), constants::ROOM_TEMPERATURE);
     }
 
     #[test]
