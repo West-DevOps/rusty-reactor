@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.3](https://github.com/West-DevOps/rusty-reactor/compare/v0.1.2...v0.1.3) (2025-09-07)
+
+
+### Bug Fixes
+
+* remove push to crates from release flow ([#21](https://github.com/West-DevOps/rusty-reactor/issues/21)) ([dc3dbbb](https://github.com/West-DevOps/rusty-reactor/commit/dc3dbbbe58f0acaf48843667b96946cac6bbbf84))
+* upload to crates and some docstrings ([9c9bcdc](https://github.com/West-DevOps/rusty-reactor/commit/9c9bcdcb840fbb543231f9083b2d91f65690e271))
+* upload to crates and some docstrings ([17f67a2](https://github.com/West-DevOps/rusty-reactor/commit/17f67a2f4cfadebddfc086663b79f7987908cf0a))
+
 ## [0.1.2](https://github.com/West-DevOps/rusty-reactor/compare/v0.1.1...v0.1.2) (2025-09-07)
 
 
