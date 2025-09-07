@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.2](https://github.com/West-DevOps/rusty-reactor/compare/v0.1.1...v0.1.2) (2025-09-07)
+
+
+### Bug Fixes
+
+* **rp:** dont upload bin to github release ([46e9088](https://github.com/West-DevOps/rusty-reactor/commit/46e90886cabb139367b6872b46f8a1892d5dabd6))
+* **rp:** dont upload bin to github release ([4558435](https://github.com/West-DevOps/rusty-reactor/commit/455843596e20f71e693e6eb4d8e3d7b9ff0bddd6))
+
 ## 0.1.1 (2025-09-07)
 
 
