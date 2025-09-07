@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/West-DevOps/rusty-reactor/compare/v0.1.3...v0.1.4) (2025-09-07)
+
+
+### Bug Fixes
+
+* update triggers for crates.io upload ([#22](https://github.com/West-DevOps/rusty-reactor/issues/22)) ([b67d117](https://github.com/West-DevOps/rusty-reactor/commit/b67d1176439bec2ed867af1727c75b75f1065fd9))
+
 ## [0.1.3](https://github.com/West-DevOps/rusty-reactor/compare/v0.1.2...v0.1.3) (2025-09-07)
 
 
