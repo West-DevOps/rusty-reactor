@@ -1,5 +1,7 @@
+//! Deals with logging reactor state and dangerous condition detection/remediation. 
 use crate::units;
 
+/// Gathering and storing state of the cluster over time
 pub struct Scada {
     core_temperature_history: Vec<units::Kelvin>,
     rod_position_history: Vec<units::RodPosition>,
@@ -9,8 +11,8 @@ pub struct Scada {
 impl Scada {
     pub fn new(sampling_interval: units::Second) -> Scada {
         Scada {
-            core_temperature_history: Vec::<f64>::new(),
-            rod_position_history: Vec::<u8>::new(),
+            core_temperature_history: Vec::<units::Kelvin>::new(),
+            rod_position_history: Vec::<units::RodPosition>::new(),
             sampling_interval: sampling_interval,
         }
     }
