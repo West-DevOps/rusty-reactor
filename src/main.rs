@@ -1,3 +1,4 @@
+#[warn(missing_docs)]
 pub mod units;
 pub mod constants;
 mod control;

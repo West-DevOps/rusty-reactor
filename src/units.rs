@@ -15,10 +15,10 @@ pub type GramCm3 = f64;
 /// Time type
 pub type Second = f64;
 
-// rod position type (0-100 in code)
+/// rod position type (0-100 in code)
 pub type RodPosition = u8;
 
-// percent (also 0-100 only in code)
+/// percent (also 0-100 only in code)
 pub type Percent = u8;
 
 /// heat capacities of materials
