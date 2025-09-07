@@ -20,8 +20,7 @@ jobs:
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          config-file: release-please-config.json
-          manifest-file: release-please-manifest.json
+          release-type: rust
       - name: Print release outputs for debugging
         continue-on-error: true
         run: |
@@ -42,7 +41,7 @@ jobs:
       - name: Upload Release Artifact
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ needs.release-please.outputs.rust--tag_name }} target/x86_64-unknown-linux-gnu/release/hello_rust
+        run: gh release upload ${{ needs.release-please.outputs.rust--tag_name }} target/x86_64-unknown-linux-gnu/release/rusty_reactor
 
   crates-release:
     runs-on: ubuntu-latest
