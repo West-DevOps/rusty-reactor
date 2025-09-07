@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.5](https://github.com/West-DevOps/rusty-reactor/compare/v0.1.4...v0.1.5) (2025-09-07)
+
+
+### Bug Fixes
+
+* switch back to github token and manually run publish action ([#25](https://github.com/West-DevOps/rusty-reactor/issues/25)) ([5d5a1ad](https://github.com/West-DevOps/rusty-reactor/commit/5d5a1ad172246e9a701f18848a439cf82a8542e0))
+
 ## [0.1.4](https://github.com/West-DevOps/rusty-reactor/compare/v0.1.3...v0.1.4) (2025-09-07)
 
 
