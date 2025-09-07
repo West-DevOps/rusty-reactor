@@ -2,7 +2,7 @@
   "include-component-in-tag": false,
   "include-v-in-tag": false,
   "tag-separator": "@",
-  "separate-pull-requests": false,
+  "separate-pull-requests": true,
   "packages": {
     "rusty-reactor": {
       "path": ".",
