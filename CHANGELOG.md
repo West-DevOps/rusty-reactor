@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/West-DevOps/rusty-reactor/compare/v0.1.6...v0.2.0) (2025-09-07)
+
+
+### Features
+
+* final access checks for 0.2.0 ([#30](https://github.com/West-DevOps/rusty-reactor/issues/30)) ([c5f7d2f](https://github.com/West-DevOps/rusty-reactor/commit/c5f7d2f38eb8969f08cec58697db11a26b8d27bc))
+
 ## [0.1.6](https://github.com/West-DevOps/rusty-reactor/compare/v0.1.5...v0.1.6) (2025-09-07)
 
 
