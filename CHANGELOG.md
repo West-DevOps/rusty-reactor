@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.6](https://github.com/West-DevOps/rusty-reactor/compare/v0.1.5...v0.1.6) (2025-09-07)
+
+
+### Bug Fixes
+
+* cleanup pipelines ([#28](https://github.com/West-DevOps/rusty-reactor/issues/28)) ([d67db5a](https://github.com/West-DevOps/rusty-reactor/commit/d67db5ac3e614bdc8f62a352ff0106bc20f9a378))
+
 ## [0.1.5](https://github.com/West-DevOps/rusty-reactor/compare/v0.1.4...v0.1.5) (2025-09-07)
 
 
