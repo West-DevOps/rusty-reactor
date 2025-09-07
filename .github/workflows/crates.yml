@@ -7,6 +7,7 @@ jobs:
   crates-io-release:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Login
         run: |-
           echo "${{ secrets.CARGO_REGISTRY_TOKEN }}" | cargo login
