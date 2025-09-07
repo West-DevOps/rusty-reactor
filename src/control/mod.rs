@@ -10,7 +10,7 @@ pub struct ControlRoom {
 impl ControlRoom {
     pub fn new() -> ControlRoom {
         ControlRoom {
-            scada: Scada::new(),
+            scada: Scada::new(1f64),
         }
     }
 

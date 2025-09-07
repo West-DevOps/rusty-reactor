@@ -1,9 +1,9 @@
-use crate::constants;
+use crate::{units, constants};
 
 #[derive(Debug)]
 pub struct Loop {
-    inlet_temperature: f64,
-    outlet_temperature: f64,
+    inlet_temperature: units::Kelvin,
+    outlet_temperature: units::Kelvin,
 }
 
 impl Loop {
@@ -14,8 +14,8 @@ impl Loop {
         }
     }
 
-    fn spin_pump(self, temperature: f32, exchanger: Exchanger) -> f32 {
-        temperature / 100.0 * exchanger.get_efficiency() as f32
+    fn spin_pump(self, temperature: units::Kelvin, exchanger: Exchanger) -> f64 {
+        temperature / 100.0f64 * exchanger.get_efficiency() as f64
     }
 }
 

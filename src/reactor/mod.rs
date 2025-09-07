@@ -1,6 +1,7 @@
 mod core;
 pub mod coolant;
 
+use crate::units;
 use core::Core;
 use coolant::{ Loop, Exchanger };
 
@@ -14,7 +15,7 @@ pub struct Reactor {
 
 impl Reactor {
     /// Create a new instance of the Reactor object / thread.
-    pub fn new(fuel_load: f64, exchanger_efficiency: u8) -> Reactor {
+    pub fn new(fuel_load: units::Gram, exchanger_efficiency: units::Percent) -> Reactor {
         Reactor {
             core: Core::new(fuel_load),
             primary_loop: Loop::new(),
@@ -23,13 +24,26 @@ impl Reactor {
         }
     }
 
+    /// Get the secondary loop object. 
     pub fn get_secondary_loop(self) -> Loop {
         self.secondary_loop
     }
 
+    // Main reactor thread code.  Started by `main.rs`
     pub fn start(self) {
         loop {
             
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_reactor_new() {
+        let mut rct = Reactor::new(5000f64, 50u8);
+        rct.get_secondary_loop();
     }
 }

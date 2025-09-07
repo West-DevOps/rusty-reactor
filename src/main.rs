@@ -1,13 +1,10 @@
+pub mod units;
 pub mod constants;
-mod logger;
-mod station;
 mod control;
 mod reactor;
 
-use logger::init_the_loggers;
-
+/// Create the station and control threads, wait for them to join.
 fn main() {
-    init_the_loggers();
-    
     println!("{:?}", constants::U_PROPERTIES);
+    println!("{:?}", constants::H2O_PROPERTIES);
 }

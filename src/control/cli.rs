@@ -1,12 +1,21 @@
 use std::io::{stderr, stdin, stdout, Stderr, Stdin, Stdout, Write};
+use crate::{units, constants};
 
 const PROMPT: &str = "Command> ";
 
 #[derive(Debug, Clone, Copy)]
-enum Commands {
-    Init,
-    Status,
-    New,
+/// 
+enum GetParams {
+    Temperature,
+    RemainingFuel,
+    RodPosition
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum CoreCommand {
+    Scram,
+    Get(GetParams),
+    MoveRods(units::RodPosition),
 }
 
 pub fn run_cli() {

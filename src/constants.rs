@@ -1,40 +1,26 @@
-//! This module carries the public types for scientific units used and the `MaterialProperties` consts of every material modelled in the program.
-
-/// Custom type for temperature
-pub type Kelvin = f64;
-
-/// Custom type for pressure
-pub type Pascal = f64;
-
-/// Pub type for mass
-pub type Gram = f64;
-
-/// grams per cubic cm (density)
-pub type GramCm3 = f64;
-
-/// For heat capacities of materials
-pub type JoulesPerGramKelvin = f64;
+//! This module carries the consts and `MaterialProperties` consts of every material modelled in the program.
+use crate::units;
 
 /// Freezing point of water, in Kelvin at STP
-pub const ZERO_CENTIGRADE: Kelvin = 273.15;
+pub const ZERO_CENTIGRADE: units::Kelvin = 273.15;
 
 /// Room temperature (20C), in Kelvin at STP
-pub const ROOM_TEMPERATURE: Kelvin = ZERO_CENTIGRADE + 20f64;
+pub const ROOM_TEMPERATURE: units::Kelvin = 293.15;
 
 #[derive(Debug)]
 /// Commonly used properties of materials involved
 pub struct MaterialProperties {
   /// Melting point of the element/compound, in Kelvin
-  pub melting_point: Kelvin,
+  pub melting_point: units::Kelvin,
 
   /// Boiling point of the element/compound, in Kelvin
-  pub boiling_point: Kelvin,
+  pub boiling_point: units::Kelvin,
 
   /// Density, in grams per centimetre cubed 
-  pub density: GramCm3,
+  pub density: units::GramCm3,
 
   /// Specific heat capacity, Joules of energy needed to increase the temperature of 1 gram of the material by 1 kelvin. 
-  pub heat_capacity: JoulesPerGramKelvin,
+  pub heat_capacity: units::JoulesPerGramKelvin,
 }
 
 /// Properties of the main fuel elements (uranium) in the reactor
