@@ -1,3 +1,4 @@
+#![feature(str_split_remainder)]
 #[warn(missing_docs)]
 pub mod units;
 pub mod constants;
