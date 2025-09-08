@@ -1,12 +1,30 @@
-use std::io::{stderr, stdin, stdout, Stderr, Stdin, Stdout, Write};
-use crate::{units, constants};
+use std::{fmt::Display, io::{stderr, stdin, stdout, Stderr, Stdin, Stdout, Write}, str::FromStr};
+use crate::units;
+use clap::{Parser, Command};
 
 /// Prompt given to the user for each command
-const PROMPT: &str = "Command> ";
+const PROMPT: &'static str = "reactor-cli $ ";
+
+
+#[derive(Parser, Copy, Clone, Debug)]
+/// Clap struct for programs CLI args.
+pub struct CliArgs {
+    #[arg(short, long, default_value = "5000.0")]
+    pub fuel_mass_per_element: units::Gram,
+
+    #[arg(short, long, default_value = "true")]
+    pub panic_on_meltdown: bool,
+
+    #[arg(short, long, default_value = "75")]
+    pub exchanger_efficiency: units::Percent,
+
+    #[arg(short, long, default_value = "1")]
+    pub scada_sampling_interval: units::Second,
+}
 
 #[derive(Debug, Clone, Copy)]
 /// Gettable pieces of data from the Reactor
-enum GetParams {
+pub(super) enum GetParams {
     Temperature,
     RemainingFuel,
     RodPosition
@@ -15,27 +33,116 @@ enum GetParams {
 #[derive(Debug, Clone, Copy)]
 /// The CoreCommand enum which is passed through the channels between 
 /// `cli` and the `reactor`
-pub enum CoreCommand {
+pub(crate) enum CoreCommand {
     Scram,
     Get(GetParams),
     MoveRods(units::RodPosition),
+    Exit,
 }
 
-/// Main code for the users cli thread
-pub fn run_cli() {
+impl FromStr for CoreCommand {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if s == "exit" {
+            Ok(CoreCommand::Exit)
+        } else {
+            Err(())
+        }
+    }
+}
+
+impl Display for CoreCommand {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            CoreCommand::Scram => write!(f, "Reactor Scrammed!"),
+            CoreCommand::Get(get_params) => write!(f, "Get{:?}", get_params),
+            CoreCommand::MoveRods(p) => write!(f, "{}% withdrawn", p),
+            CoreCommand::Exit => write!(f, "Exit"),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+/// The CoreResponse enum which is passed through the channels between 
+/// `Reactor` and the `ControlRoom`
+pub(crate) enum CoreResponse {
+    Ok,
+    Temperature(units::Kelvin),
+    RodPosition(units::RodPosition),
+}
+
+impl Display for CoreResponse {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            CoreResponse::Ok => write!(f, "Ok"),
+            CoreResponse::Temperature(t) => write!(f, "{}K", t),
+            CoreResponse::RodPosition(p) =>  write!(f, "{}% withdrawn", p),
+        }
+    }
+}
+
+/// Send the program name, version and first prompt to the stdout handle
+pub(super) fn init_cli() -> Result<(), String> {
+    let mut sout: Stdout = stdout();
+
+    let hello_message: String = format!("Welcome to {} version {}.\n{}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"), PROMPT);
+
+    match sout.write_all(hello_message.as_ref()) {
+        Ok(_) => {},
+        Err(_) => return Err(String::from("Cannot write to stdout")),
+    }
+
+    match sout.flush() {
+        Ok(_) => return Ok(()),
+        Err(_) => return Err(String::from("Cannot flush stdout")),
+    }
+}
+
+/// Read a command from stdin, (blocking function)
+pub(super) fn cli_read_command() -> Result<CoreCommand, String> {
     let sin: Stdin = stdin();
     let mut sout: Stdout = stdout();
     let serr: Stderr = stderr();
 
-    loop {
-        let _ = sout.lock();
-        let _ = sout.write(PROMPT.as_bytes());
-        let _ = sout.flush();
+    let mut user_input: &mut String = &mut "".into();
 
-        let mut user_input_str = String::new();
-
-        let _ = sin.read_line(&mut user_input_str);
-
-        println!("{}", user_input_str);
+    // This line locks the thread calling it and waits for a
+    // entire line of input from stdin
+    match sin.read_line(user_input) {
+        Ok(_) => {},
+        Err(_) => return Err("Could not read stdin".into()),
     }
+
+    match CoreCommand::from_str(user_input) {
+        Ok(cmd) => {
+            return Ok(cmd)
+        },
+        Err(_) => {
+            return Err("Could not parse command line".into());
+        },
+    }
+    
+
+    Ok(CoreCommand::from_str(user_input).expect(""))
+
+}
+
+/// Write a message to the stdout handle
+pub(super) fn cli_write_response(message: &str) -> Result<(), String> {
+    let mut sout: Stdout = stdout();
+
+    for output_string in ["\n", message, "\n"] {
+        match sout.write_all(output_string.as_ref()) {
+            Ok(_) => {},
+            Err(error) => return Err(error.to_string()),
+        }
+    }
+
+    match sout.flush() {
+        Ok(_) => {},
+        Err(error) => return Err(error.to_string()),
+    }
+
+    Ok(())
 }
