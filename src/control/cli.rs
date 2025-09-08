@@ -1,6 +1,6 @@
 use std::{fmt::Display, io::{stderr, stdin, stdout, Stderr, Stdin, Stdout, Write}, str::FromStr};
 use crate::units;
-use clap::{Parser, Command};
+use clap::{builder::Str, Command, Parser};
 
 /// Prompt given to the user for each command
 const PROMPT: &'static str = "reactor-cli $ ";
@@ -41,13 +41,42 @@ pub(crate) enum CoreCommand {
 }
 
 impl FromStr for CoreCommand {
-    type Err = ();
+    type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         if s == "exit" {
             Ok(CoreCommand::Exit)
+        } else if s == "scram" {
+            Ok(CoreCommand::Scram)
+        } else if s.starts_with("get ") {
+            // We need to some sub-scanning for get commands
+            let mut substr = s.split(" ");
+            substr.next();
+            let getcmd = substr.remainder().expect("NIGHTLY CODE (as of 8-Sep-2025): Could not get remainder of substr");
+            if getcmd == "temp" {
+                Ok(CoreCommand::Get(GetParams::Temperature))
+            } else if getcmd == "fuel" {
+                Ok(CoreCommand::Get(GetParams::RemainingFuel))
+            } else if getcmd == "rp" {
+                Ok(CoreCommand::Get(GetParams::RodPosition))
+            } else {
+                return Err(String::from("Invalid Get Command"));
+            }
+        } else if s.starts_with("mr") {
+            // MoveRods
+            let mut pod_pos = s.split(" ");
+            pod_pos.next();
+            let rp = pod_pos.remainder().expect("NIGHLTY CODE: Could not parse rod pos");
+
+            // Attempt to parse the users desired mr arg
+            match rp.parse::<u8>() {
+                Ok(int) => return Ok(CoreCommand::MoveRods(int)),
+                Err(pie) => {
+                    return Err(pie.to_string());
+                },
+            };
         } else {
-            Err(())
+            return Err(String::from("Invalid Command"))
         }
     }
 }
@@ -94,9 +123,10 @@ pub(super) fn init_cli() -> Result<(), String> {
     }
 
     match sout.flush() {
-        Ok(_) => return Ok(()),
+        Ok(_) => {},
         Err(_) => return Err(String::from("Cannot flush stdout")),
     }
+    Ok(())
 }
 
 /// Read a command from stdin, (blocking function)
@@ -122,10 +152,6 @@ pub(super) fn cli_read_command() -> Result<CoreCommand, String> {
             return Err("Could not parse command line".into());
         },
     }
-    
-
-    Ok(CoreCommand::from_str(user_input).expect(""))
-
 }
 
 /// Write a message to the stdout handle
@@ -145,4 +171,14 @@ pub(super) fn cli_write_response(message: &str) -> Result<(), String> {
     }
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn ok_response() {
+        assert_eq!(CoreResponse::Ok.to_string(), String::from("Ok"));
+    }
 }
