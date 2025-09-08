@@ -7,6 +7,15 @@ pub const ZERO_CENTIGRADE: units::Kelvin = 273.15;
 /// Room temperature (20C), in Kelvin at STP
 pub const ROOM_TEMPERATURE: units::Kelvin = 293.15;
 
+/// Standard pressure
+pub const STANDARD_ATOMSPHERIC_PRESSURE: units::Pascal = 101325f64;
+
+/// Temporary const for fuel decay
+pub const BASE_HEAT: units::Kelvin = 0.143;
+
+/// Temp const for fuel decay
+pub const BASE_MASS_LOSS: units::Kelvin = 0.012;
+
 #[derive(Debug)]
 /// Commonly used properties of materials involved
 pub struct MaterialProperties {
