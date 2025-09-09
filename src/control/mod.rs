@@ -34,15 +34,8 @@ impl ControlRoom {
     /// Called by `main.rs` to make the main thread this ControlRoom 
     pub(super) fn start(&self) -> Result<(), String> {
         match cli::init_cli() {
-            Ok(_) => {},
+            Ok(_) => Ok(()),
             Err(msg) => { return Err(msg) },
-        }
-
-
-
-        // Here we enter the ControlRooms eternal loop
-        loop {
-            
         }
     }
 }

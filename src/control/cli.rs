@@ -24,7 +24,7 @@ pub struct CliArgs {
 
 #[derive(Debug, Clone, Copy)]
 /// Gettable pieces of data from the Reactor
-pub(super) enum GetParams {
+pub(crate) enum GetParams {
     Temperature,
     RemainingFuel,
     RodPosition
@@ -99,6 +99,7 @@ pub(crate) enum CoreResponse {
     Ok,
     Temperature(units::Kelvin),
     RodPosition(units::RodPosition),
+    RemainingFuel(units::Gram),
 }
 
 impl Display for CoreResponse {
@@ -107,6 +108,7 @@ impl Display for CoreResponse {
             CoreResponse::Ok => write!(f, "Ok"),
             CoreResponse::Temperature(t) => write!(f, "{}K", t),
             CoreResponse::RodPosition(p) =>  write!(f, "{}% withdrawn", p),
+            CoreResponse::RemainingFuel(r) => write!(f, "{}K", r),
         }
     }
 }

@@ -1,5 +1,5 @@
 //! Deals with logging reactor state and dangerous condition detection/remediation. 
-use crate::units;
+use crate::{control::cli::CoreCommand, units};
 
 /// Gathering and storing state of the cluster over time
 pub struct Scada {
