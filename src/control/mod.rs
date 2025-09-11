@@ -19,7 +19,7 @@ pub struct ControlRoom {
 
 impl ControlRoom {
     /// Create new instance of the ControlRoom, the top-level object for this module
-    pub fn new(scada_sampling_interval: units::Second, core_sender: Sender<CoreCommand>, core_receiver: Receiver<CoreResponse>) -> ControlRoom {
+    pub(crate) fn new(scada_sampling_interval: units::Second, core_sender: Sender<CoreCommand>, core_receiver: Receiver<CoreResponse>) -> ControlRoom {
         ControlRoom {
             scada: Scada::new(scada_sampling_interval),
             core_sender,
@@ -33,9 +33,41 @@ impl ControlRoom {
 
     /// Called by `main.rs` to make the main thread this ControlRoom 
     pub(super) fn start(&self) -> Result<(), String> {
-        match cli::init_cli() {
-            Ok(_) => Ok(()),
+        match cli::init() {
+            Ok(_) => {},
             Err(msg) => { return Err(msg) },
+        }
+
+        loop {
+            match cli::read_command() {
+                Ok(cmd) => {
+                    match self.core_sender.send(cmd) {
+                        Ok(_) => {},
+                        Err(e) => { return Err(e.to_string()) },
+                    }
+                },
+                Err(e) => { return Err(e) },
+            }
+
+            match self.core_receiver.try_recv() {
+                Ok(response) => {
+                    match cli::write_response(response.to_string()) {
+                        Ok(_) => {},
+                        Err(e) => { return Err(e) },
+                    }
+                },
+                Err(e) => {
+                    match e {
+                        std::sync::mpsc::TryRecvError::Empty => {},
+                        std::sync::mpsc::TryRecvError::Disconnected => {
+                            match cli::write_response(String::from("Disconnected channel, must exit.")) {
+                                Ok(_) => {},
+                                Err(e) => { return Err(e) },
+                            }
+                        },
+                    }
+                },
+            }
         }
     }
 }

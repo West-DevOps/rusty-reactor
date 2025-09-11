@@ -1,6 +1,6 @@
 use std::{fmt::Display, io::{stderr, stdin, stdout, Stderr, Stdin, Stdout, Write}, str::FromStr};
 use crate::units;
-use clap::{builder::Str, Command, Parser};
+use clap::Parser;
 
 /// Prompt given to the user for each command
 const PROMPT: &'static str = "reactor-cli $ ";
@@ -92,29 +92,34 @@ impl Display for CoreCommand {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 /// The CoreResponse enum which is passed through the channels between 
 /// `Reactor` and the `ControlRoom`
 pub(crate) enum CoreResponse {
     Ok,
+    Warning(String),
+    Error(String),
     Temperature(units::Kelvin),
     RodPosition(units::RodPosition),
     RemainingFuel(units::Gram),
 }
 
 impl Display for CoreResponse {
+    /// Implement to_string() for CoreResponses
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             CoreResponse::Ok => write!(f, "Ok"),
             CoreResponse::Temperature(t) => write!(f, "{}K", t),
             CoreResponse::RodPosition(p) =>  write!(f, "{}% withdrawn", p),
             CoreResponse::RemainingFuel(r) => write!(f, "{}K", r),
+            CoreResponse::Warning(message) => write!(f, "{}", message),
+            CoreResponse::Error(message) => write!(f, "{}", message),
         }
     }
 }
 
-/// Send the program name, version and first prompt to the stdout handle
-pub(super) fn init_cli() -> Result<(), String> {
+/// Send the program name, version and first user prompt to the stdout handle
+pub(super) fn init() -> Result<(), String> {
     let mut sout: Stdout = stdout();
 
     let hello_message: String = format!("Welcome to {} version {}.\n{}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"), PROMPT);
@@ -132,7 +137,7 @@ pub(super) fn init_cli() -> Result<(), String> {
 }
 
 /// Read a command from stdin, (blocking function)
-pub(super) fn cli_read_command() -> Result<CoreCommand, String> {
+pub(super) fn read_command() -> Result<CoreCommand, String> {
     let sin: Stdin = stdin();
     let mut sout: Stdout = stdout();
     let serr: Stderr = stderr();
@@ -157,10 +162,10 @@ pub(super) fn cli_read_command() -> Result<CoreCommand, String> {
 }
 
 /// Write a message to the stdout handle
-pub(super) fn cli_write_response(message: &str) -> Result<(), String> {
+pub(super) fn write_response(message: String) -> Result<(), String> {
     let mut sout: Stdout = stdout();
 
-    for output_string in ["\n", message, "\n"] {
+    for output_string in ["\n", &*message, "\n"] {
         match sout.write_all(output_string.as_ref()) {
             Ok(_) => {},
             Err(error) => return Err(error.to_string()),

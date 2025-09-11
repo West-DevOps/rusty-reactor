@@ -23,7 +23,7 @@ fn main() {
     // Create and start the reactor thread.
     let reactor_thread_handle = thread::Builder::new().name("reactor-thread".into()).spawn(move || {
         let mut reactor: Reactor = Reactor::new(args.fuel_mass_per_element, args.exchanger_efficiency, args.panic_on_meltdown);
-        reactor.start(cli_rx, reactor_tx);
+        let _ = reactor.start(cli_rx, reactor_tx);
     }).expect("Could not create the reactor thread");
 
     // start control room execution in this thread which is a blocking until either the reactor thread panics
@@ -48,7 +48,7 @@ fn main() {
     //   The control room should kill the reactor thread before its start function returns Ok(())
     // But stdio errors in control room could lead us here. 
     // future development should solve this and ensure this code is unreachable. 
-    println!("Control room thread ");
+    println!("NOT GOOD!!! Control room thread exited and reactor still running!");
     
     match reactor_thread_handle.join() {
         Ok(_) => {},

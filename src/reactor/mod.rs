@@ -32,9 +32,17 @@ impl Reactor {
 
     // Main reactor thread code.  Started by `main.rs`
     pub(super) fn start(&mut self, command_receiver: Receiver<CoreCommand>, response_sender: Sender<CoreResponse>) -> Result<(), String> {
-
         loop {
-            self.core.decay();
+            // Call decay on the core
+            match self.core.decay() {
+                Ok(_) => {},
+                Err(e) => {
+                    let _ = response_sender.send(CoreResponse::Error(e.clone()));
+                    return Err(e);
+                },
+            }
+            
+            // Check for CoreCommand on the receiver channel
             match command_receiver.try_recv() {
                 Ok(cmd) => {
                     match cmd {
@@ -60,8 +68,17 @@ impl Reactor {
                         },
                         CoreCommand::Exit => todo!(),
                     }
+                }, 
+                Err(e) => {
+                    match e {
+                        std::sync::mpsc::TryRecvError::Empty => {},
+                        std::sync::mpsc::TryRecvError::Disconnected => {
+                            let response: String = String::from("CoreCommand receiver channel has disconnected, must exit.");
+                            let _ = response_sender.send(CoreResponse::Error(response.clone()));
+                            return Err(response);
+                        },
+                    }
                 },
-                Err(_) => {},
             }
         }
     }
