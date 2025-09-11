@@ -1,7 +1,7 @@
 mod core;
 mod coolant;
 
-use crate::{control::cli::{CoreCommand, CoreResponse}, units};
+use crate::{control::cli::{CoreCommand, CoreResponse, GetParams}, units};
 use core::Core;
 use std::sync::mpsc::{Sender, Receiver};
 use coolant::{Loop, Exchanger};
@@ -31,9 +31,55 @@ impl Reactor {
     }
 
     // Main reactor thread code.  Started by `main.rs`
-    pub(super) fn start(&mut self, command_receiver: Receiver<CoreCommand>, response_sender: Sender<CoreResponse>) {
+    pub(super) fn start(&mut self, command_receiver: Receiver<CoreCommand>, response_sender: Sender<CoreResponse>) -> Result<(), String> {
         loop {
-            self.core.decay();
+            // Call decay on the core
+            match self.core.decay() {
+                Ok(_) => {},
+                Err(e) => {
+                    let _ = response_sender.send(CoreResponse::Error(e.clone()));
+                    return Err(e);
+                },
+            }
+            
+            // Check for CoreCommand on the receiver channel
+            match command_receiver.try_recv() {
+                Ok(cmd) => {
+                    match cmd {
+                        CoreCommand::Scram => {
+                            self.core.set_rod_position(0u8);
+                        },
+                        CoreCommand::Get(get_params) => {
+                            match get_params {
+                                GetParams::Temperature => {
+                                    response_sender.send(CoreResponse::Temperature(self.core.get_temperature()));
+                                },
+                                GetParams::RemainingFuel => {
+                                    response_sender.send(CoreResponse::RemainingFuel(self.core.get_total_mass()));
+                                },
+                                GetParams::RodPosition => {
+                                    response_sender.send(CoreResponse::RodPosition(self.core.get_rod_position()));
+                                },                   
+                            }
+                        },
+                        CoreCommand::MoveRods(rpos) => {
+                            self.core.set_rod_position(rpos);
+                            response_sender.send(CoreResponse::Ok);
+                        },
+                        CoreCommand::Exit => todo!(),
+                    }
+                }, 
+                Err(e) => {
+                    match e {
+                        std::sync::mpsc::TryRecvError::Empty => {},
+                        std::sync::mpsc::TryRecvError::Disconnected => {
+                            let response: String = String::from("CoreCommand receiver channel has disconnected, must exit.");
+                            let _ = response_sender.send(CoreResponse::Error(response.clone()));
+                            return Err(response);
+                        },
+                    }
+                },
+            }
         }
     }
 }

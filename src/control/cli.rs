@@ -1,6 +1,6 @@
 use std::{fmt::Display, io::{stderr, stdin, stdout, Stderr, Stdin, Stdout, Write}, str::FromStr};
 use crate::units;
-use clap::{builder::Str, Command, Parser};
+use clap::Parser;
 
 /// Prompt given to the user for each command
 const PROMPT: &'static str = "reactor-cli $ ";
@@ -24,7 +24,7 @@ pub struct CliArgs {
 
 #[derive(Debug, Clone, Copy)]
 /// Gettable pieces of data from the Reactor
-pub(super) enum GetParams {
+pub(crate) enum GetParams {
     Temperature,
     RemainingFuel,
     RodPosition
@@ -50,9 +50,8 @@ impl FromStr for CoreCommand {
             Ok(CoreCommand::Scram)
         } else if s.starts_with("get ") {
             // We need to some sub-scanning for get commands
-            let mut substr = s.split(" ");
-            substr.next();
-            let getcmd = substr.remainder().expect("NIGHTLY CODE (as of 8-Sep-2025): Could not get remainder of substr");
+            let getcmd = s.split(' ').next_back().unwrap();
+
             if getcmd == "temp" {
                 Ok(CoreCommand::Get(GetParams::Temperature))
             } else if getcmd == "fuel" {
@@ -62,11 +61,9 @@ impl FromStr for CoreCommand {
             } else {
                 return Err(String::from("Invalid Get Command"));
             }
-        } else if s.starts_with("mr") {
+        } else if s.starts_with("rpos ") {
             // MoveRods
-            let mut pod_pos = s.split(" ");
-            pod_pos.next();
-            let rp = pod_pos.remainder().expect("NIGHLTY CODE: Could not parse rod pos");
+            let rp = s.split(' ').next_back().unwrap();
 
             // Attempt to parse the users desired mr arg
             match rp.parse::<u8>() {
@@ -76,7 +73,9 @@ impl FromStr for CoreCommand {
                 },
             };
         } else {
-            return Err(String::from("Invalid Command"))
+            let mut message: String = String::from("Invalid Command: ");
+            message.push_str(s);
+            return Err(message);
         }
     }
 }
@@ -92,30 +91,37 @@ impl Display for CoreCommand {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 /// The CoreResponse enum which is passed through the channels between 
 /// `Reactor` and the `ControlRoom`
 pub(crate) enum CoreResponse {
     Ok,
+    Warning(String),
+    Error(String),
     Temperature(units::Kelvin),
     RodPosition(units::RodPosition),
+    RemainingFuel(units::Gram),
 }
 
 impl Display for CoreResponse {
+    /// Implement to_string() for CoreResponses
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             CoreResponse::Ok => write!(f, "Ok"),
             CoreResponse::Temperature(t) => write!(f, "{}K", t),
             CoreResponse::RodPosition(p) =>  write!(f, "{}% withdrawn", p),
+            CoreResponse::RemainingFuel(r) => write!(f, "{}K", r),
+            CoreResponse::Warning(message) => write!(f, "{}", message),
+            CoreResponse::Error(message) => write!(f, "{}", message),
         }
     }
 }
 
-/// Send the program name, version and first prompt to the stdout handle
-pub(super) fn init_cli() -> Result<(), String> {
+/// Send the program name, version and first user prompt to the stdout handle
+pub(super) fn init() -> Result<(), String> {
     let mut sout: Stdout = stdout();
 
-    let hello_message: String = format!("Welcome to {} version {}.\n{}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"), PROMPT);
+    let hello_message: String = format!("Welcome to {} version {}.\n", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
 
     match sout.write_all(hello_message.as_ref()) {
         Ok(_) => {},
@@ -130,12 +136,14 @@ pub(super) fn init_cli() -> Result<(), String> {
 }
 
 /// Read a command from stdin, (blocking function)
-pub(super) fn cli_read_command() -> Result<CoreCommand, String> {
+pub(super) fn read_command() -> Result<CoreCommand, String> {
     let sin: Stdin = stdin();
     let mut sout: Stdout = stdout();
-    let serr: Stderr = stderr();
+    let user_input: &mut String = &mut "".into();
 
-    let mut user_input: &mut String = &mut "".into();
+    let msg = format!("{}", PROMPT);
+    let _ = sout.write(msg.as_ref());
+    let _ = sout.flush();
 
     // This line locks the thread calling it and waits for a
     // entire line of input from stdin
@@ -144,26 +152,27 @@ pub(super) fn cli_read_command() -> Result<CoreCommand, String> {
         Err(_) => return Err("Could not read stdin".into()),
     }
 
-    match CoreCommand::from_str(user_input) {
+    let stripped_cmd = user_input.strip_suffix("\n").unwrap();
+
+    match CoreCommand::from_str(stripped_cmd) {
         Ok(cmd) => {
             return Ok(cmd)
         },
-        Err(_) => {
-            return Err("Could not parse command line".into());
+        Err(e) => {
+            return Err(e);
         },
     }
 }
 
 /// Write a message to the stdout handle
-pub(super) fn cli_write_response(message: &str) -> Result<(), String> {
+pub(super) fn write_response(message: String) -> Result<(), String> {
     let mut sout: Stdout = stdout();
 
-    for output_string in ["\n", message, "\n"] {
-        match sout.write_all(output_string.as_ref()) {
-            Ok(_) => {},
-            Err(error) => return Err(error.to_string()),
-        }
+    match sout.write_all(message.as_ref()) {
+        Ok(_) => {},
+        Err(error) => return Err(error.to_string()),
     }
+    
 
     match sout.flush() {
         Ok(_) => {},
@@ -180,5 +189,32 @@ mod test {
     #[test]
     fn ok_response() {
         assert_eq!(CoreResponse::Ok.to_string(), String::from("Ok"));
+    }
+
+    #[test]
+    fn core_command_from_str_exit() {
+        let cmd = CoreCommand::from_str("exit").expect("Cannot from_str");
+        match cmd {
+            CoreCommand::Exit => { assert!(true) },
+            _ => { assert!(false) }
+        }
+    }
+
+    #[test]
+    fn core_command_from_str_get_temp() {
+        let cmd = CoreCommand::from_str("get temp").expect("Cannot from_str");
+        match cmd {
+            CoreCommand::Get(GetParams::Temperature) => { assert!(true) },
+            _ => { assert!(false) }
+        }
+    }
+
+    #[test]
+    fn core_command_from_str_move_rod() {
+        let cmd = CoreCommand::from_str("rpos 50").expect("Cannot from_str");
+        match cmd {
+            CoreCommand::MoveRods(50) => { assert!(true) },
+            _ => { assert!(false) }
+        }
     }
 }
