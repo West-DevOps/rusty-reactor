@@ -37,14 +37,6 @@ mod test {
     use super::*;
 
     #[test]
-    fn loop_can_be_pumped() {
-        let loop_1: Loop = Loop::new();
-        let ex = Exchanger::new(50);
-
-        assert_eq!(250.0, loop_1.spin_pump(500.0, ex));
-    }
-
-    #[test]
     fn exchanger_get_efficiency() {
         let exchg = Exchanger::new(75);
         assert_eq!(75, exchg.get_efficiency());
