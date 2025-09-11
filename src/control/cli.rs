@@ -1,4 +1,4 @@
-use std::{fmt::Display, io::{stderr, stdin, stdout, Stderr, Stdin, Stdout, Write}, str::FromStr};
+use std::{fmt::Display, io::{stdin, stdout, Stdin, Stdout, Write}, str::FromStr};
 use crate::units;
 use clap::Parser;
 
@@ -96,7 +96,6 @@ impl Display for CoreCommand {
 /// `Reactor` and the `ControlRoom`
 pub(crate) enum CoreResponse {
     Ok,
-    Warning(String),
     Error(String),
     Temperature(units::Kelvin),
     RodPosition(units::RodPosition),
@@ -111,7 +110,6 @@ impl Display for CoreResponse {
             CoreResponse::Temperature(t) => write!(f, "{}K", t),
             CoreResponse::RodPosition(p) =>  write!(f, "{}% withdrawn", p),
             CoreResponse::RemainingFuel(r) => write!(f, "{}K", r),
-            CoreResponse::Warning(message) => write!(f, "{}", message),
             CoreResponse::Error(message) => write!(f, "{}", message),
         }
     }
