@@ -208,4 +208,13 @@ mod test {
             _ => { assert!(false) }
         }
     }
+
+    #[test]
+    fn core_command_from_str_move_rod() {
+        let cmd = CoreCommand::from_str("rpos 50").expect("Cannot from_str");
+        match cmd {
+            CoreCommand::MoveRods(50) => { assert!(true) },
+            _ => { assert!(false) }
+        }
+    }
 }
