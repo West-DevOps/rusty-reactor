@@ -1,4 +1,3 @@
-#![feature(str_split_remainder)]
 #[warn(missing_docs)]
 pub mod units;
 pub mod constants;
@@ -33,7 +32,7 @@ fn main() {
     match control_room.start() {
         Ok(_) => {},
         Err(msg) => {
-            println!("Error returned from control room, must panic!()");
+            println!("{}", msg);
             panic!("{}", msg);
         },
     }

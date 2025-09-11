@@ -39,16 +39,6 @@ impl ControlRoom {
         }
 
         loop {
-            match cli::read_command() {
-                Ok(cmd) => {
-                    match self.core_sender.send(cmd) {
-                        Ok(_) => {},
-                        Err(e) => { return Err(e.to_string()) },
-                    }
-                },
-                Err(e) => { return Err(e) },
-            }
-
             match self.core_receiver.try_recv() {
                 Ok(response) => {
                     match cli::write_response(response.to_string()) {
@@ -68,7 +58,18 @@ impl ControlRoom {
                     }
                 },
             }
+
+            match cli::read_command() {
+                Ok(cmd) => {
+                    match self.core_sender.send(cmd) {
+                        Ok(_) => {},
+                        Err(e) => { return Err(e.to_string()) },
+                    }
+                },
+                Err(e) => { 
+                    println!("{}", e);
+                 },
+            }            
         }
     }
 }
-

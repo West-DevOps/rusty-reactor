@@ -45,7 +45,7 @@ impl FuelElement {
 /// Core struct, maintains the FuelElement array, average core temp and a few other critical core components
 pub(super) struct Core {
     /// A grid of fuel elements
-    fuel_elements: [[FuelElement; 255]; 255],
+    fuel_elements: [[FuelElement; 100]; 100],
 
     /// 0% means the rods are 0% _withdrawn_ (i.e. fully inserted into the core, choking the reaction).  100% is full-gas (fully withdrawn)
     control_rod_postion: units::RodPosition,
@@ -57,7 +57,7 @@ pub(super) struct Core {
 impl Core {
     pub fn new(fuel_mass_per_element: units::Gram, panic_on_meltdown: bool) -> Core { 
         Core {
-            fuel_elements: [[FuelElement::new(fuel_mass_per_element); 255]; 255],
+            fuel_elements: [[FuelElement::new(fuel_mass_per_element); 100]; 100],
             control_rod_postion: 0,
             panic_on_meltdown,
         }

@@ -59,8 +59,8 @@ impl Reactor {
                                 },
                                 GetParams::RodPosition => {
                                     response_sender.send(CoreResponse::RodPosition(self.core.get_rod_position()));
-                                },
-                                                            }
+                                },                   
+                            }
                         },
                         CoreCommand::MoveRods(rpos) => {
                             self.core.set_rod_position(rpos);
