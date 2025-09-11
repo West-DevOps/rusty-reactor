@@ -24,6 +24,16 @@ impl Reactor {
             heat_exchanger: Exchanger::new(exchanger_efficiency),
         }
     }
+    
+    /// Get the secondary loop object. 
+    pub fn get_heat_exchanger(self) -> Exchanger {
+        self.heat_exchanger
+    }
+    
+    /// Get the primary loop object. 
+    pub fn get_primary_loop(self) -> Loop {
+        self.primary_loop
+    }
 
     /// Get the secondary loop object. 
     pub fn get_secondary_loop(self) -> Loop {
@@ -47,24 +57,25 @@ impl Reactor {
                 Ok(cmd) => {
                     match cmd {
                         CoreCommand::Scram => {
-                            self.core.set_rod_position(0u8);
+                            let _ = self.core.set_rod_position(0u8);
+                            let _ = response_sender.send(CoreResponse::Ok);
                         },
                         CoreCommand::Get(get_params) => {
                             match get_params {
                                 GetParams::Temperature => {
-                                    response_sender.send(CoreResponse::Temperature(self.core.get_temperature()));
+                                    let _ = response_sender.send(CoreResponse::Temperature(self.core.get_temperature()));
                                 },
                                 GetParams::RemainingFuel => {
-                                    response_sender.send(CoreResponse::RemainingFuel(self.core.get_total_mass()));
+                                    let _ = response_sender.send(CoreResponse::RemainingFuel(self.core.get_total_mass()));
                                 },
                                 GetParams::RodPosition => {
-                                    response_sender.send(CoreResponse::RodPosition(self.core.get_rod_position()));
+                                    let _ = response_sender.send(CoreResponse::RodPosition(self.core.get_rod_position()));
                                 },                   
                             }
                         },
                         CoreCommand::MoveRods(rpos) => {
-                            self.core.set_rod_position(rpos);
-                            response_sender.send(CoreResponse::Ok);
+                            let _ = self.core.set_rod_position(rpos);
+                            let _ = response_sender.send(CoreResponse::Ok);
                         },
                         CoreCommand::Exit => todo!(),
                     }
