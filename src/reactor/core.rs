@@ -94,6 +94,7 @@ impl Core {
         Ok(())
     }
 
+    /// Get remaining mass of all fuel elements
     pub fn get_total_mass(&self) -> units::Gram {
         let mut r_mass: units::Gram = 0f64;
         for array in self.fuel_elements.iter() {
@@ -104,6 +105,7 @@ impl Core {
         r_mass
     }
 
+    /// Get average temperature of core
     pub fn get_temperature(&self) -> units::Kelvin {
         let mut temp: units::Kelvin = 0f64;
         for array in self.fuel_elements.iter() {
@@ -125,5 +127,35 @@ impl Core {
         }
         self.control_rod_postion = value;
         Ok(self.control_rod_postion)
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn new_fuel_element() {
+        let mut ele: FuelElement = FuelElement::new(5000f64);
+        let _ = ele.decay(100);
+        assert!(ele.fuel_mass < 5000f64);
+        assert!(ele.temperature > constants::ROOM_TEMPERATURE);
+    }
+
+    #[test]
+    fn new_core_rod_position_set_get() {
+        let mut core: Core = Core::new(5000f64, false);
+        let _ = core.set_rod_position(50);
+        assert_eq!(core.get_rod_position(), 50);
+    }
+
+    #[test]
+    fn get_average_temperature() {
+        let mut core: Core = Core::new(5000f64, false);
+        let _ = core.set_rod_position(100);
+        for _ in 0..100 {
+            let _ = core.decay();
+        }
+        assert!(core.get_temperature() > constants::ROOM_TEMPERATURE);
     }
 }

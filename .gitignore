@@ -27,3 +27,4 @@ Cargo.lock
 # Custom, crate specific ignores
 # The log directory 
 log/
+default_*
