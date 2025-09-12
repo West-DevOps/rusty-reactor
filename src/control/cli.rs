@@ -43,6 +43,7 @@ pub(crate) enum CoreCommand {
 impl FromStr for CoreCommand {
     type Err = String;
 
+    /// Parse a string into a CoreCommand
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         if s == "exit" {
             Ok(CoreCommand::Exit)
@@ -81,6 +82,7 @@ impl FromStr for CoreCommand {
 }
 
 impl Display for CoreCommand {
+    /// Implement to_string() for CoreCommand
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             CoreCommand::Scram => write!(f, "Reactor Scrammed!"),

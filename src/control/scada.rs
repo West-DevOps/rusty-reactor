@@ -9,6 +9,7 @@ pub struct Scada {
 }
 
 impl Scada {
+    /// Create a new SCADA object.
     pub(super) fn new(sampling_interval: units::Second) -> Scada {
         Scada {
             core_temperature_history: Vec::<units::Kelvin>::new(),
@@ -17,16 +18,19 @@ impl Scada {
         }
     }
 
+    /// Log the core temperature to the Vector
     pub(super) fn log_core_temp(&mut self, temperature: units::Kelvin) -> Result<units::Kelvin, String> {
         self.core_temperature_history.push(temperature);
         Ok(temperature)
     }
 
+    /// Log the rod position to the appropriate Vector
     pub(super) fn log_rod_position(&mut self, position: units::RodPosition) -> Result<units::RodPosition, String> {
         self.rod_position_history.push(position);
         Ok(position)
     }
 
+    /// Get the sampling interval from the SCADA system.
     pub(super) fn get_sample_interval(self) -> units::Second {
         self.sampling_interval
     }

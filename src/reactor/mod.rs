@@ -1,3 +1,5 @@
+//! The Reactor module, contains all code related to the actual reactor system
+//! This is in contrast to the `ControlRoom` thread which deals with data gathering and user input.  
 mod core;
 mod coolant;
 

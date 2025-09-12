@@ -7,6 +7,7 @@ pub struct Loop {
 }
 
 impl Loop {
+    /// Create new instance of a coolant loop, init at room temp.
     pub fn new() -> Loop {
         Loop {
             inlet_temperature: constants::ROOM_TEMPERATURE,
@@ -21,12 +22,14 @@ pub struct Exchanger {
 }
 
 impl Exchanger {
+    /// Create new heat exchanger for transerring heat between the primary and secondary loops.
     pub fn new(efficiency: u8) -> Exchanger {
         Exchanger {
             efficiency: efficiency,
         }
     }
 
+    /// Get the exchangers current efficency 
     pub fn get_efficiency(&self) -> u8 {
         self.efficiency
     }

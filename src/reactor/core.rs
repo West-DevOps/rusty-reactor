@@ -55,6 +55,7 @@ pub(super) struct Core {
 }
 
 impl Core {
+    /// Create new instance of a Core struct
     pub fn new(fuel_mass_per_element: units::Gram, panic_on_meltdown: bool) -> Core { 
         Core {
             fuel_elements: [[FuelElement::new(fuel_mass_per_element); 100]; 100],
@@ -63,6 +64,8 @@ impl Core {
         }
     }
 
+    /// SCRAM the reactor, slams the control rods all the way in.
+    /// Will return Err if the fuel has already melted. 
     pub fn scram(&mut self) -> Result<&str, &str> {
         if self.get_temperature() >= constants::U_PROPERTIES.melting_point {
             return Err("MELTDOWN!"); // Not much we can do now!
@@ -72,6 +75,7 @@ impl Core {
         Ok("SCRAMMED REACTOR!")
     }
 
+    /// Main decay loop, calls decay() on all fuel elements in the core.
     pub(super) fn decay(&mut self) -> Result<(), String> {
         if self.get_temperature() > constants::U_PROPERTIES.melting_point {
             return Err(String::from("Core Meltdown"));
@@ -117,10 +121,12 @@ impl Core {
         total
     }
 
+    /// Get the current rod position in the core
     pub fn get_rod_position(&self) -> units::RodPosition {
         self.control_rod_postion
     }
 
+    /// Set a new rod position. 
     pub fn set_rod_position(&mut self, value: units::RodPosition) -> Result<units::RodPosition, &str> {
         if value > 100 {
             return Err("Rod position must be 0-100");
