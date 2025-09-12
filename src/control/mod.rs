@@ -27,6 +27,7 @@ impl ControlRoom {
         }
     }
 
+    /// Get the sample interval for the SCADA system.
     pub fn get_scada_sampling_interval(self) -> units::Second {
         self.scada.get_sample_interval()
     }
