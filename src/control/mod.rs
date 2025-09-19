@@ -46,6 +46,17 @@ impl ControlRoom {
                         Ok(_) => {},
                         Err(e) => { return Err(e) },
                     }
+
+                    match response {
+                        CoreResponse::Ok => todo!(),
+                        CoreResponse::Error(_) => todo!(),
+                        CoreResponse::Temperature(_) => todo!(),
+                        CoreResponse::RodPosition(_) => todo!(),
+                        CoreResponse::RemainingFuel(_) => todo!(),
+                        CoreResponse::Shutdown => {
+                            break;
+                        },
+                    }
                 },
                 Err(e) => {
                     match e {
@@ -72,5 +83,6 @@ impl ControlRoom {
                  },
             }            
         }
+        Ok(())
     }
 }

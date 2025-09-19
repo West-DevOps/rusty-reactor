@@ -5,7 +5,6 @@ use clap::Parser;
 /// Prompt given to the user for each command
 const PROMPT: &'static str = "reactor-cli $ ";
 
-
 #[derive(Parser, Copy, Clone, Debug)]
 /// Clap struct for programs CLI args.
 pub struct CliArgs {
@@ -102,6 +101,7 @@ pub(crate) enum CoreResponse {
     Temperature(units::Kelvin),
     RodPosition(units::RodPosition),
     RemainingFuel(units::Gram),
+    Shutdown,
 }
 
 impl Display for CoreResponse {
@@ -113,6 +113,7 @@ impl Display for CoreResponse {
             CoreResponse::RodPosition(p) =>  write!(f, "{}% withdrawn", p),
             CoreResponse::RemainingFuel(r) => write!(f, "{}K", r),
             CoreResponse::Error(message) => write!(f, "{}", message),
+            CoreResponse::Shutdown => write!(f, "Shutting down"),
         }
     }
 }
@@ -152,9 +153,7 @@ pub(super) fn read_command() -> Result<CoreCommand, String> {
         Err(_) => return Err("Could not read stdin".into()),
     }
 
-    let stripped_cmd = user_input.strip_suffix("\n").unwrap();
-
-    match CoreCommand::from_str(stripped_cmd) {
+    match CoreCommand::from_str(user_input.trim()) {
         Ok(cmd) => {
             return Ok(cmd)
         },
