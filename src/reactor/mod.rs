@@ -79,7 +79,10 @@ impl Reactor {
                             let _ = self.core.set_rod_position(rpos);
                             let _ = response_sender.send(CoreResponse::Ok);
                         },
-                        CoreCommand::Exit => todo!(),
+                        CoreCommand::Exit => {
+                            let _ = response_sender.send(CoreResponse::Shutdown);
+                            return Ok(())
+                        },
                     }
                 }, 
                 Err(e) => {

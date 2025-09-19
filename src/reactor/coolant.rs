@@ -23,6 +23,7 @@ pub struct Exchanger {
 
 impl Exchanger {
     /// Create new heat exchanger for transerring heat between the primary and secondary loops.
+    /// This is also known as a `condenser` as it turns the steam from the turbine 
     pub fn new(efficiency: u8) -> Exchanger {
         Exchanger {
             efficiency: efficiency,
