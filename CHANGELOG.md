@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.3.0](https://github.com/West-DevOps/rusty-reactor/compare/v0.2.0...v0.3.0) (2025-12-15)
+
+
+### Features
+
+* adds missing docs to all modules ([#48](https://github.com/West-DevOps/rusty-reactor/issues/48)) ([138a244](https://github.com/West-DevOps/rusty-reactor/commit/138a2445dd2760c6087892de38e30755fa5c10ab))
+* first cutover of code from other repo ([#34](https://github.com/West-DevOps/rusty-reactor/issues/34)) ([1ba99b1](https://github.com/West-DevOps/rusty-reactor/commit/1ba99b192706be9f84f28b605929af6482551d7b))
+* threading code ([1ec667c](https://github.com/West-DevOps/rusty-reactor/commit/1ec667c956cc1f9c9564f07cfd3fcec31f7f1e0a))
+* update to 1.92 and cleanup README ([#51](https://github.com/West-DevOps/rusty-reactor/issues/51)) ([df1a836](https://github.com/West-DevOps/rusty-reactor/commit/df1a83661cc02dd7328d48c9e40e519fdb5b68af))
+
+
+### Bug Fixes
+
+* adding tests for core ([#47](https://github.com/West-DevOps/rusty-reactor/issues/47)) ([be7fb61](https://github.com/West-DevOps/rusty-reactor/commit/be7fb61081d1492c24bf5f947bf719bfa7bba42d))
+* **cli:** trim user input ([#50](https://github.com/West-DevOps/rusty-reactor/issues/50)) ([b216a69](https://github.com/West-DevOps/rusty-reactor/commit/b216a69c045cfc2a3d2c069305ee2f75beed97ea))
+* more refactoring ([#39](https://github.com/West-DevOps/rusty-reactor/issues/39)) ([3bf714b](https://github.com/West-DevOps/rusty-reactor/commit/3bf714bc3d753cd2bc58083b27af8276d25c8b0b))
+* remove most of the compiler warnings ([#46](https://github.com/West-DevOps/rusty-reactor/issues/46)) ([0fbcf20](https://github.com/West-DevOps/rusty-reactor/commit/0fbcf20f4db115548a428abee543d1d0500b59fa))
+
 ## [0.2.0](https://github.com/West-DevOps/rusty-reactor/compare/v0.1.6...v0.2.0) (2025-09-07)
 
 

@@ -1,6 +1,6 @@
 [package]
 name = "rusty-reactor"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2024"
 authors = ["Ben West"]
 description = "A learning playground for rust based on a nuclear powerplant"
