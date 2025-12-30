@@ -32,7 +32,6 @@ fn main() {
     match control_room.start() {
         Ok(_) => {},
         Err(msg) => {
-            println!("{}", msg);
             panic!("{}", msg);
         },
     }
@@ -44,7 +43,7 @@ fn main() {
     
     // If we get here the control room thread has exited before the reactor thread
     // This is unexpected behaviour:
-    //   The control room should kill the reactor thread before its start function returns Ok(())
+    // The control room should kill the reactor thread before its start function returns Ok(())
     // But stdio errors in control room could lead us here. 
     // future development should solve this and ensure this code is unreachable. 
     println!("NOT GOOD!!! Control room thread exited and reactor still running!");
